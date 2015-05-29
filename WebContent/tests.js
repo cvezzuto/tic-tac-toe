@@ -12,6 +12,12 @@ test("board has 3 columns in each row", function () {
 module('UX');
 
 test("space should register when clicked", function () {
+	
 	canvasClicked(0, 0);  
 	ok(board[0][0] === "X");
 });
+
+
+
+//mocks
+function htmlDraw() {};
