@@ -107,7 +107,7 @@ test("an open turn should prioritize the middle", function (){
 	ok(board[1][1] === "O");
 });
 
-test("an open turn should prioritize the corners if middle is taken", function (){
+test("an open turn should prioritize the corners if middle is taken unless a fork is created", function (){
 	turn = 4;
 	board = [
              ["X", "", ""],
@@ -115,7 +115,7 @@ test("an open turn should prioritize the corners if middle is taken", function (
              ["", "", "X"]
              ];
 	computerTurn();
-	ok(board[0][2] === "O");
+	ok(board[1][0] === "O");
 });
 
 test("an open turn should prioritize the edges if corners and middle are taken", function (){

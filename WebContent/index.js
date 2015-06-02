@@ -42,22 +42,14 @@ function htmlDraw(){
 };
 
 function computerTurn(){
-	//if first move is in a corner, then you need to place a block in the opposite corner
-	
+
+	//OFFENSIVE
 	if(turn % 2 === 0){
 		//iterate through each row on the board
 		_.forEach(board, function(row, rowIndex) {
 			var rowCount = _.countBy(row);
 			//first check for offensive (do you have 2 in a row with an open spot)...then win
 			if(rowCount["O"] === 2 && rowCount[""] === 1 && turn % 2 === 0){
-				var openIndex = _.indexOf(row, "");
-				board[rowIndex][openIndex] = "O";
-				htmlDraw();
-				turn++;
-				
-			}
-			//then check defensive (do they have 2 in a row with an open spot)...then block
-			else if(rowCount["X"] === 2 && rowCount[""] === 1 && turn % 2 === 0){
 				var openIndex = _.indexOf(row, "");
 				board[rowIndex][openIndex] = "O";
 				htmlDraw();
@@ -75,14 +67,6 @@ function computerTurn(){
 				], function(column, columnIndex){
 			var columnCount = _.countBy(column);
 			if(columnCount["O"] === 2 && columnCount[""] === 1 && turn % 2 === 0){
-				var openIndex = _.indexOf(column, "");
-				board[openIndex][columnIndex] = "O";
-				htmlDraw();
-				turn++;
-				
-			}
-			//then check defensive (do they have 2 in a row with an open spot)...then block
-			else if(columnCount["X"] === 2 && columnCount[""] === 1 && turn % 2 === 0){
 				var openIndex = _.indexOf(column, "");
 				board[openIndex][columnIndex] = "O";
 				htmlDraw();
@@ -118,8 +102,56 @@ function computerTurn(){
 					turn++;
 					
 				}
+
+			});
+	}
+	
+	//DEFENSIVE
+	if(turn % 2 === 0){
+		//iterate through each row on the board
+		_.forEach(board, function(row, rowIndex) {
+			var rowCount = _.countBy(row);
+			//first check for offensive (do you have 2 in a row with an open spot)...then win
+
+			//then check defensive (do they have 2 in a row with an open spot)...then block
+			if(rowCount["X"] === 2 && rowCount[""] === 1 && turn % 2 === 0){
+				var openIndex = _.indexOf(row, "");
+				board[rowIndex][openIndex] = "O";
+				htmlDraw();
+				turn++;
+				
+			}
+		});
+	}
+	if(turn % 2 === 0){
+		//iterate through each column on the board 
+		_.forEach([
+		          [board[0][0], board[1][0], board[2][0]],
+		          [board[0][1], board[1][1], board[2][1]],
+		          [board[0][2], board[1][2], board[2][2]]
+				], function(column, columnIndex){
+			var columnCount = _.countBy(column);
+
+			//then check defensive (do they have 2 in a row with an open spot)...then block
+			if(columnCount["X"] === 2 && columnCount[""] === 1 && turn % 2 === 0){
+				var openIndex = _.indexOf(column, "");
+				board[openIndex][columnIndex] = "O";
+				htmlDraw();
+				turn++;
+				
+			}
+		});
+	}
+	if(turn % 2 === 0){
+		//iterate through each diagonal
+		_.forEach([
+			          [board[0][0], board[1][1], board[2][2]],
+			          [board[0][2], board[1][1], board[2][0]]
+					], function(diag, diagIndex){
+				var diagCount = _.countBy(diag);
+
 				//then check defensive (do they have 2 in a row with an open spot)...then block
-				else if(diagCount["X"] === 2 && diagCount[""] === 1 && turn % 2 === 0){
+				if(diagCount["X"] === 2 && diagCount[""] === 1 && turn % 2 === 0){
 					var openIndex = _.indexOf(diag, "");
 					if(diagIndex === 0){
 						board[openIndex][openIndex] = "O";
@@ -137,10 +169,13 @@ function computerTurn(){
 					}
 					htmlDraw();
 					turn++;
-					
 				}
 			});
 	}
+	
+	
+	
+	
 	if(turn % 2 === 0){
 	//if no unblocked pairs, block the X with the most blank Axis using logical priority
 		//first, check the middle
@@ -149,10 +184,73 @@ function computerTurn(){
 			htmlDraw();
 			turn++;
 		}
-		//then the corners
-		else if(turn % 2 === 0){
+		//then check to see if the player has 2 opposite corners...if they do, create 2 in a row
+		if(turn % 2 === 0){
+			//iterate through each corner combo on the board 
+			_.forEach([
+			          [board[0][0], board[2][2]],
+			          [board[2][0], board[0][2]]
+					], function(corners, cornersIndex){
+				var cornerCount = _.countBy(corners);
+				if(cornerCount["X"] === 2){
+					//create 2 in a row using one of the sides
+					_.forEach(board, function(row, rowIndex) {
+						var rowCount = _.countBy(row);
+						//if you have 1 with an open space
+						if(rowCount["O"] === 1 && rowCount[""] === 2 && turn % 2 === 0){
+							var openIndex = _.indexOf(row, "");
+							board[rowIndex][openIndex] = "O";
+							htmlDraw();
+							turn++;
+						}
+					});
+					if(turn % 2 === 0){
+						//if you don't find any, go ahead and check column ways
+						//iterate through each column on the board 
+						_.forEach([
+						          [board[0][0], board[1][0], board[2][0]],
+						          [board[0][1], board[1][1], board[2][1]],
+						          [board[0][2], board[1][2], board[2][2]]
+								], function(column, columnIndex){
+							var columnCount = _.countBy(column);
+							if(columnCount["O"] === 1 && columnCount[""] === 2 && turn % 2 === 0){
+								var openIndex = _.indexOf(column, "");
+								board[openIndex][columnIndex] = "O";
+								htmlDraw();
+								turn++;
+								
+							}
+						});
+					}
+				}
+			});
+		}
+		//then the corners (prioritizing opposite corners)
+		if(turn % 2 === 0){
 			_.forEach([board[0][0], board[0][2], board[2][0], board[2][2]], function(corner, cornerIndex){
-				if(corner === "" && turn % 2 === 0){
+				if(corner === "X" && turn % 2 === 0){
+					if(cornerIndex === 0 && board[2][2] === ""){
+						board[2][2] = "O";
+						htmlDraw();
+						turn++;
+					}
+					if(cornerIndex === 1 && board[2][0] === ""){
+						board[2][0] = "O";
+						htmlDraw();
+						turn++;
+					}
+					if(cornerIndex === 2 && board[0][2] === ""){
+						board[0][2] = "O";
+						htmlDraw();
+						turn++;
+					}
+					if(cornerIndex === 3 && board[0][0] === ""){
+						board[0][0] = "O";
+						htmlDraw();
+						turn++;
+					}
+				}
+				else if(corner === "" && turn % 2 === 0){
 					if(cornerIndex === 0){
 						board[0][0] = "O";
 						htmlDraw();
@@ -177,7 +275,7 @@ function computerTurn(){
 			});
 		}
 		//then the edges
-		else {
+		if(turn % 2 === 0) {
 			_.forEach([board[0][1], board[1][0], board[1][2], board[2][1]], function(corner, cornerIndex){
 				if(corner === "" && turn % 2 === 0){
 					if(cornerIndex === 0){
