@@ -1,12 +1,3 @@
-module('BOARD.board');
-
-test("BOARD.board has three rows", function() { 
- ok(BOARD.board.length === 3); 
-});
-
-test("BOARD.board has 3 columns in each row", function () {
-  ok(BOARD.board[0].length === 3);
-});
 
 
 module('UX');
