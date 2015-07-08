@@ -61,3 +61,7 @@ BOARD.get = {
 		        ];
 	}
 }
+
+function isEmpty(array){
+	return _.countBy(array)[""] === array.length;
+};

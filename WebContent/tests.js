@@ -3,9 +3,26 @@
 module('UX');
 
 test("space should register when clicked", function () {
-	
+	turn = 1;
+	BOARD.board = [
+	               ["", "", ""],
+	               ["", "", ""],
+	               ["", "", ""]
+	               ];
 	canvasClicked(0, 0);  
 	ok(BOARD.board[0][0] === "X");
+});
+
+test("space should not register if already occupied", function () {
+	turn = 1;
+	BOARD.board = [
+	               ["", "", ""],
+	               ["", "", ""],
+	               ["", "", ""]
+	               ];
+	BOARD.board[0][0] = "O";
+	canvasClicked(0, 0);
+	ok(BOARD.board[0][0] === "O");
 });
 
 module('game');
@@ -120,5 +137,42 @@ test("an open turn should prioritize the edges if corners and middle are taken",
 	ok(BOARD.board[1][2] === "O");
 });
 
+test("game over if 3 in a row horizontally", function (){
+	BOARD.board = [
+	               ["X", "X", "X"],
+	               ["", "", ""],
+	               ["", "", ""]
+	               ];
+	ok(isGameOver() === true);
+});
+
+test("game over if 3 in a row vertically", function (){
+	BOARD.board = [
+	               ["X", "O", "X"],
+	               ["X", "", ""],
+	               ["X", "", ""]
+	               ];
+	ok(isGameOver() === true);
+});
+
+test("game over if 3 in a row diagonally", function (){
+	BOARD.board = [
+	               ["X", "O", "X"],
+	               ["", "X", ""],
+	               ["", "", "X"]
+	               ];
+	ok(isGameOver() === true);
+});
+
+test("game over if board full", function (){
+	BOARD.board = [
+	               ["X", "O", "X"],
+	               ["O", "X", "O"],
+	               ["O", "O", "X"]
+	               ];
+	ok(isGameOver() === true);
+});
+
 //mocks
 function htmlDraw() {};
+function printGameOver() {};

@@ -83,3 +83,17 @@ test("board returns corner pairs", function () {
 	deepEqual(BOARD.get.cornerPairs()[0], ["1", "9"]);
 	deepEqual(BOARD.get.cornerPairs()[1], ["7", "3"]);
 });
+
+test("board can detect a full row or column", function () {
+	var array = ["1", "1", ""];
+	notOk(isEmpty(array));
+});
+
+test("board can detect an empty row or column", function () {
+	BOARD.board = [
+	               ["", "", ""],
+	               ["4", "5", "6"],
+	               ["7", "8", "9"]
+	               ];
+	ok(isEmpty(BOARD.get.rows()[0]));
+});
